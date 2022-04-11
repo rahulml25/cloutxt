@@ -1,8 +1,16 @@
 import Head from 'next/head';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 
 const Home = () => {
   const [text, setText] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(()=>{
+    if (loading) {
+  	  setText(localStorage.getItem('txt') || '');
+  	  setLoading(false);
+  	} else localStorage.setItem('txt', text);
+  }, [text]);
 
   const onChange = (e) => {
   	setText(e.target.value);
@@ -12,8 +20,19 @@ const Home = () => {
   	setText(text.toUpperCase());
   }
 
+  const turnToCapitalize = (e) => {
+  	setText(
+  	  text.charAt(0).toUpperCase()
+      + text.slice(1).toLowerCase()
+  	);
+  }
+
   const turnToLowerCase = (e) => {
   	setText(text.toLowerCase());
+  }
+
+  const turnToClearSpace = (e) => {
+  	setText(text.replace(/\s+/g, ' '))
   }
 
   return (
@@ -22,7 +41,7 @@ const Home = () => {
         <title>CloutTxt</title>
       </Head>
 
-      <main className="container px-2">
+      <main className="container px-2 sm:px-4">
         <h1 className="my-2 text-2xl text-bold text-blue-500 text-center">
         CloutTxt</h1>
 
@@ -32,25 +51,15 @@ const Home = () => {
             rows={8} value={text} onChange={onChange}
           />
 
-          <div className="py-2 text-white space-x-2">
+          <div className="flex flex-wrap justify-center py-2 text-white space-x-2">
             <button
-              onClick={turnToUpperCase}
-              className="p-2
-              bg-blue-500 hover:bg-white
-              border border-blue-500
-              hover:text-blue-500
-              active:scale-[.95] rounded-md
-              transition">
-              Uppercase</button>
+              onClick={turnToUpperCase}>Uppercase</button>
             <button
-              onClick={turnToLowerCase}
-              className="p-2
-              bg-blue-500 hover:bg-white
-              border border-blue-500
-              hover:text-blue-500
-              active:scale-[.95] rounded-md
-              transition">
-              Lowercase</button>
+              onClick={turnToLowerCase}>Lowercase</button>
+            <button
+              onClick={turnToCapitalize}>Capitalize</button>
+            <button
+              onClick={turnToClearSpace}>Clear Space</button>
           </div>
         </div>
 
